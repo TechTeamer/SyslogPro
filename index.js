@@ -1604,6 +1604,7 @@ class CEF {
    * @param {Syslog} [options.server=false] - A {@link module:SyslogPro~Syslog|
    *    Syslog server connection} that should be used to send messages directly
    *    from this class. @see SyslogPro~Syslog
+   * @param {number} [options.version] - The version of the CEF
    */
   constructor(options) {
     /** @private @type {boolean} */
@@ -1621,8 +1622,10 @@ class CEF {
     this.name = options.name || 'Unknown';
     /** @type {string} */
     this.severity = options.severity || 'Unknown';
+    this.version = options.version || 0;
     /** @type {object} */
     this.extensions = options.extensions || {
+      // Version 0.1
       deviceAction: null,
       applicationProtocol: null,
       deviceCustomIPv6Address1: null,
@@ -1780,6 +1783,15 @@ class CEF {
       sourceTranslatedZoneURI: null,
       sourceZoneExternalID: null,
       sourceZoneURI: null,
+      // Version 1.2
+      agentTranslatedZoneKey: null,
+      agentZoneKey: null,
+      customerKey: null,
+      dZoneKey: null,
+      deviceTranslatedZoneKey: null,
+      deviceZoneKey: null,
+      sTranslatedZoneKey: null,
+      sZoneKey: null,
     };
     if (options.server) {
       if (options.server.constructor__) {
@@ -1797,7 +1809,10 @@ class CEF {
    * @throws {Error} - First element to fail validation
    */
   validate() {
-    const Extensions = {
+    if (![0, 1].includes(this.version)) {
+      throw new Error('TYPE ERROR: CEF Version not set correctly');
+    }
+    const Extensions_v0_1 = {
       deviceAction: {
         key: 'act',
         type: 'String',
@@ -2957,6 +2972,63 @@ class CEF {
         discription: 'The URI for the Zone that the source asset has been ' +
             'assigned to in ArcSight.' },
     };
+
+    const Extensions_v1_2 = {
+      agentTranslatedZoneKey: {
+        key: 'agentTranslatedZoneKey',
+        type: 'Number',
+        len: null,
+        discription: 'ID of an agentTranslatedZone resource reference.',
+      },
+      agentZoneKey: {
+        key: 'agentZoneKey',
+        type: 'Number',
+        len: null,
+        discription: 'ID of an agentZone resource reference.',
+      },
+      customerKey: {
+        key: 'customerKey',
+        type: 'Number',
+        len: null,
+        discription: 'ID of a destinationTranslate dZone resource reference.',
+      },
+      dZoneKey: {
+        key: 'dZoneKey',
+        type: 'Number',
+        len: null,
+        discription: 'ID of a destinationZone resource reference.',
+      },
+      deviceTranslatedZoneKey: {
+        key: 'deviceTranslatedZoneKey',
+        type: 'Number',
+        len: null,
+        discription: 'ID of a deviceTranslatedZone resource reference.',
+      },
+      deviceZoneKey: {
+        key: 'deviceZoneKey',
+        type: 'Number',
+        len: null,
+        discription: 'ID of a deviceZone resource reference.',
+      },
+      sTranslatedZoneKey: {
+        key: 'sTranslatedZoneKey',
+        type: 'Number',
+        len: null,
+        discription: 'ID of a sourceTranslatedZone resource reference.',
+      },
+      sZoneKey: {
+        key: 'sZoneKey',
+        type: 'Number',
+        len: null,
+        discription: 'ID of a sourceZone resource reference.',
+      },
+    };
+
+    const Extensions = {
+      ...Extensions_v0_1,
+      ...(this.version === 1 ? Extensions_v1_2 : {}),
+    };
+
     if (typeof this.deviceVendor !== 'string'
         || typeof this.deviceProduct !== 'string'
         || typeof this.deviceVersion !== 'string'
@@ -3024,7 +3096,7 @@ class CEF {
    * @return {string} - String with formated message
    */
   buildMessage() {
-    let fmtMsg = 'CEF:0';
+    let fmtMsg = `CEF:${this.version}`;
     fmtMsg += '|' + this.deviceVendor;
     fmtMsg += '|' + this.deviceProduct;
     fmtMsg += '|' + this.deviceVersion;
