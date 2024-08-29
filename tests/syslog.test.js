@@ -15,7 +15,7 @@ function setupServers () {
     this.udpServer.bind(global.udpServerPort, () => {
       // console.log('UDP server running on', global.udpServerPort);
     });
-    
+
     // Load a TCP server
     // global.tcpServerPort = 8001;
     this.tcpServer = net.createServer((socket) => {
@@ -25,8 +25,8 @@ function setupServers () {
     this.tcpServer.listen(global.tcpServerPort, () => {
       // console.log('TCP server running on', global.tcpServerPort);
     });
-    
-    // Load a basic TLS 
+
+    // Load a basic TLS
     // global.tlsBasicServerPort = 8002;
     const tlsBasicServerOptions = {
       key: fs.readFileSync('./tests/jest_test_server_key.pem'),
@@ -37,12 +37,12 @@ function setupServers () {
     };
     this.tlsBasicServer = tls.createServer(tlsBasicServerOptions, (socket) => {
       socket.on('data', function (data) {});
-      socket.on('end', function() {}); 
+      socket.on('end', function() {});
     });
     this.tlsBasicServer.listen(global.tlsBasicServerPort, () => {
       // console.log('TLS basic server running on', global.tlsBasicServerPort);
     });
-    
+
     // Load a TLS server with client Cert request
     // global.tlsAuthServerPort = 8003;
     const tlsAuthServerOptions = {
@@ -55,7 +55,7 @@ function setupServers () {
     };
     this.tlsAuthServer = tls.createServer(tlsAuthServerOptions, (socket) => {
       socket.on('data', function (data) {});
-      socket.on('end', function() {}); 
+      socket.on('end', function() {});
     });
     this.tlsAuthServer.listen(global.tlsAuthServerPort, () => {
       // console.log('TLS auth server running on', global.tlsAuthServerPort);
@@ -105,7 +105,7 @@ describe('CEF Class Tests', () => {
     try {
       cef.validate({});
     } catch (reason) {
-      let errorMsg = 'TYPE ERROR: CEF Key deviceAction value type was '; 
+      let errorMsg = 'TYPE ERROR: CEF Key deviceAction value type was ';
       errorMsg += 'expected to be string';
       expect(reason.message).toBe(errorMsg);
     }
@@ -122,8 +122,20 @@ describe('CEF Class Tests', () => {
     try {
       cef.validate({});
     } catch(reason) {
-      let errorMsg = 'FORMAT ERROR: CEF Extention Key applicationProtocol '; 
+      let errorMsg = 'FORMAT ERROR: CEF Extention Key applicationProtocol ';
       errorMsg += 'value length is to long; max length is 31';
+      expect(reason.message).toBe(errorMsg);
+    }
+  });
+  test('CEF Validate with invalid version ERROR', () => {
+    let cef = new SyslogPro.CEF({
+      version: -1
+    });
+    expect.assertions(1);
+    try {
+      cef.validate({});
+    } catch(reason) {
+      const errorMsg = 'TYPE ERROR: CEF Version not set correctly';
       expect(reason.message).toBe(errorMsg);
     }
   });
@@ -980,4 +992,4 @@ describe('RGB to ANSI Color Function Tests', () => {
 
 /*global expect*/
 /*global beforeAll*/
-/*global afterAll*/ 
+/*global afterAll*/
