@@ -3121,7 +3121,7 @@ class CEF {
    *    from this class. @see SyslogPro~Syslog
    */
   async send(options) {
-    const result = this.buildMessage(options);
+    const result = this.buildMessage();
     if (!this.server) {
       this.server = new Syslog(options);
     }
