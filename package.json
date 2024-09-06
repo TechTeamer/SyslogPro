@@ -1,5 +1,5 @@
 {
-  "name": "syslog-pro",
+  "name": "@techteamer/syslog-pro",
   "version": "0.3.0",
   "description": "A Syslog client which options for UDP, TCP, and TLS transport and suport for both RFC-3164 and RFC-5424 including Structured Data.",
   "keywords": [
@@ -16,11 +16,7 @@
     "Common Event Format",
     "Log Event Extended Format"
   ],
-  "author": {
-    "name": "Craig Yamato",
-    "email": "craig.yamato2@gmail.com",
-    "url": "http://linkedin.com/in/cyamato"
-  },
+  "author": "TechTeamer",
   "maintainers": [
     {
       "name": "Craig Yamato",
@@ -42,7 +38,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cyamato/SyslogPro.git"
+    "url": "https://github.com/TechTeamer/SyslogPro.git"
   },
   "directories": {
     "doc": "./docs",
